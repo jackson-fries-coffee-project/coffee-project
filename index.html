@@ -28,7 +28,7 @@
         <div class="col-6">
             <div class="card">
                 <div class="card-body">
-                    <form>
+                    <form id="search-from">
                         <label for="roast-selection"></label>
                         <select id="roast-selection" class="dropdown">
                             <option>light</option>
@@ -40,16 +40,16 @@
                         <input id="submit" type="submit"/>
                     </form>
                     <hr>
-                    <form>
-                        <label for="add-coffee"></label>
-                        <select id="add-coffee" class="dropdown">
+                    <form id="add-form">
+                        <label for="roast-add-selection"></label>
+                        <select id="roast-add-selection" class="dropdown">
                             <option>light</option>
                             <option>medium</option>
                             <option>dark</option>
                         </select>
-                        <label for="coffee-search">Coffee Name</label>
-                        <input id="coffee-search" class="input" type="text">
-                        <input id="submit" type="submit"/>
+                        <label for="add-coffee-name">Coffee Name</label>
+                        <input id="add-coffee-name" class="input" type="text">
+                        <input id="add-coffee-submit" type="submit"/>
                     </form>
                 </div>
             </div>

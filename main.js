@@ -56,7 +56,8 @@ tbody.innerHTML = renderCoffees(coffees);
 
 submitButton.addEventListener('click', updateCoffees);
 
-function searchCoffee() {
+function searchCoffee(event) {
+    event.preventDefault();
     let searchedCoffeeList = [];
     const coffeeSearch = document.getElementById("coffee-search").value.toLowerCase();
     searchedCoffeeList = coffees.filter((coffee) => {
@@ -68,16 +69,30 @@ function searchCoffee() {
     tbody.innerHTML = renderCoffees(searchedCoffeeList);
 }
 
+document.querySelector("#search-from").addEventListener("submit", searchCoffee);
 document.querySelector("#coffee-search").addEventListener("keyup", searchCoffee);
 
 function searchTimeout() {
 
 }
 
-function addCoffee() {
+function addCoffee(event) {
+    event.preventDefault();
+    const roastSelection = document.querySelector('#roast-add-selection').value;
+    const roastName = document.querySelector('#add-coffee-name').value;
 
+    const newId =   coffees.length + 1;
+
+    coffees.push({
+        id: newId,
+        name: roastName,
+        roast: roastSelection
+    })
+
+    tbody.innerHTML = renderCoffees(coffees);
 }
 
+document.querySelector("#add-form").addEventListener("submit", addCoffee);
 function saveCoffee() {
 
 }
