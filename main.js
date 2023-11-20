@@ -54,15 +54,17 @@ const roastSelection = document.querySelector('#roast-selection');
 
 tbody.innerHTML = renderCoffees(coffees);
 
-submitButton.addEventListener('click', updateCoffees);
+submitButton.addEventListener('submit', updateCoffees);
 
 function searchCoffee(event) {
-    event.preventDefault();
+    if (event) {
+        event.preventDefault();
+    }
     let searchedCoffeeList = [];
     const coffeeSearch = document.getElementById("coffee-search").value.toLowerCase();
     searchedCoffeeList = coffees.filter((coffee) => {
         if (coffee.name.toLowerCase().includes(coffeeSearch) || coffee.roast.toLowerCase().includes(coffeeSearch)) {
-            return coffee;
+            return true;
         }
     })
     console.log(searchedCoffeeList)
@@ -70,29 +72,69 @@ function searchCoffee(event) {
 }
 
 document.querySelector("#search-from").addEventListener("submit", searchCoffee);
-document.querySelector("#coffee-search").addEventListener("keyup", searchCoffee);
 
-function searchTimeout() {
+let searchTimeout;
+document.querySelector("#coffee-search").addEventListener("keyup", (event) => {
 
-}
+    console.log(event);
+    clearTimeout(searchTimeout);
+
+    // dont start
+    searchTimeout = setTimeout(function () {
+        searchCoffee();
+    }, 550);
+});
 
 function addCoffee(event) {
     event.preventDefault();
     const roastSelection = document.querySelector('#roast-add-selection').value;
     const roastName = document.querySelector('#add-coffee-name').value;
 
-    const newId =   coffees.length + 1;
-
-    coffees.push({
-        id: newId,
+    const newIdCreatedForCoffee = getAllCoffees().length + 1;
+    const newCoffee = {
+        id: newIdCreatedForCoffee,
         name: roastName,
         roast: roastSelection
-    })
+    }
+    coffees.push(newCoffee);
 
-    tbody.innerHTML = renderCoffees(coffees);
+    // save coffee to browsers local storage
+    saveCoffee(newCoffee);
+
+    tbody.innerHTML = renderCoffees(getAllCoffees());
 }
 
 document.querySelector("#add-form").addEventListener("submit", addCoffee);
-function saveCoffee() {
+
+
+// Persisting Coffees
+
+function saveCoffee(coffee) {
+    let savedCoffees = getSavedCoffees();
+    // checks if the local Storage coffees even exists otherwise would cause error with push code below
+    if (!savedCoffees?.length) {
+        savedCoffees = [];
+    }
+    // add coffee to array
+    savedCoffees.push(coffee);
+    // save to browser storage as a string
+    localStorage.setItem('coffees', JSON.stringify(savedCoffees));
+}
+
+function getSavedCoffees() {
+    // get coffees and turn them into an array
+    return JSON.parse(localStorage.getItem('coffees'))
+}
+
+function getAllCoffees() {
+    // combine default coffees and saved coffees, condition checks for length of saved coffees and merges and flattens to the existing coffee
+    return coffees.append(...(getSavedCoffees()?.length ? getSavedCoffees() : []));
+}
+
+function deleteCoffees() {
+    // ask confirmation before deleting
+    if (confirm("Are you sure you want to delete all those coffees?")) {
+        localStorage.removeItem('coffees');
+    }
 
 }
