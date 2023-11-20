@@ -114,22 +114,15 @@ document.querySelector("#roast-selection").addEventListener('change', updateCoff
 submitButton.addEventListener('click', updateCoffees);
 document.querySelector("#add-form").addEventListener("submit", addCoffee);
 document.querySelector("#search-from").addEventListener("submit", updateCoffees);
-// Long Awaited Search Timeout
-// document.querySelector("#coffee-search").addEventListener("keyup", updateCoffees);
-
+//-------------- Long Awaited Search Timeout with Event ----------------
 let searchTimeout;
 document.querySelector("#coffee-search").addEventListener("keyup", (event) => {
-
-    console.log(event);
     clearTimeout(searchTimeout);
 
-    // dont start
     searchTimeout = setTimeout(function () {
         updateCoffees();
     }, 550);
 });
-
-
 
 
 // Will Add the coffee and run functions related to persisting the coffee to the browser
