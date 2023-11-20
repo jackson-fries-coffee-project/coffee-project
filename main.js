@@ -47,24 +47,10 @@ function updateCoffees(e) {
                 filteredCoffees.push(coffee);
             }
         });
+        filteredCoffees = searchByInput(filteredCoffees)
     }
     tbody.innerHTML = renderCoffees(filteredCoffees);
 }
-
-
-// } else {
-//     switch (selectedRoast) {
-//         case "light":
-//             filteredCoffees = coffees.filter(coffee => coffee.roast === "light");
-//             break;
-//         case "medium":
-//             filteredCoffees = coffees.filter(coffee => coffee.roast === "light");
-//             break;
-//         case "dark":
-//             filteredCoffees = coffees.filter(coffee => coffee.roast === "light");
-//             break;
-//     }
-// }
 
 
 function searchByInput(coffees) {
@@ -72,7 +58,7 @@ function searchByInput(coffees) {
     if (!userInput) {
         return coffees;
     }
-    return coffees.filter(coffee => coffee.name.includes(userInput));
+    return coffees.filter(coffee => coffee.name.toLowerCase().includes(userInput));
 }
 
 let allCoffees = [];
@@ -103,21 +89,9 @@ tbody.innerHTML = renderCoffees(getAllCoffees());
 
 submitButton.addEventListener('click', updateCoffees);
 
-function searchCoffee(event) {
-    event.preventDefault();
-    let searchedCoffeeList = [];
-    const coffeeSearch = document.getElementById("coffee-search").value.toLowerCase();
-    searchedCoffeeList = allCoffees.filter((coffee) => {
-        if (coffee.name.toLowerCase().includes(coffeeSearch) || coffee.roast.toLowerCase().includes(coffeeSearch)) {
-            return coffee;
-        }
-    })
-    console.log(searchedCoffeeList)
-    tbody.innerHTML = renderCoffees(searchedCoffeeList);
-}
 
-document.querySelector("#search-from").addEventListener("submit", searchCoffee);
-document.querySelector("#coffee-search").addEventListener("keyup", searchCoffee);
+document.querySelector("#search-from").addEventListener("submit", updateCoffees);
+document.querySelector("#coffee-search").addEventListener("keyup", updateCoffees);
 
 // ADDED AN EVENT LISTENER TO ROAST SELECTION SO WHEN YOU SELECT A ROAST FROM THE DROPDOWN THE COFFEE LIST WILL UPDATE AS WELL
 document.querySelector("#roast-selection").addEventListener('change', updateCoffees);
@@ -162,8 +136,8 @@ function getSavedCoffees() {
     }
 }
 
-function getAllCoffees(){
-    return allCoffees = [...coffees,  ...getSavedCoffees()];
+function getAllCoffees() {
+    return allCoffees = [...coffees, ...getSavedCoffees()];
 }
 
 getAllCoffees();
