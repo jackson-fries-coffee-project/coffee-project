@@ -20,15 +20,64 @@ function renderCoffees(coffees) {
 function updateCoffees(e) {
     e.preventDefault(); // don't submit the form, we just want to update the data
     const selectedRoast = roastSelection.value;
-    const filteredCoffees = [];
-    coffees.forEach(coffee => {
-        // ADDED ANOTHER CONDITION TO MAKE ALL THE ROAST POPULATE WHEN 'all' IS SELECTED
-        if (coffee.roast === selectedRoast || selectedRoast === "all") {
-            filteredCoffees.push(coffee);
+    let filteredCoffees = [];
+    let userSelection = [];
+    // const userInput = document.getElementById("coffee-search").value;
+// filterAll(filteredCoffees, userInput);
+    if (selectedRoast !== "all") {
+        userSelection = [...coffees];
+        console.log(userSelection)
+        switch (selectedRoast) {
+            case "light":
+                filteredCoffees = userSelection.filter(coffee => coffee.roast === "light");
+                filteredCoffees = searchByInput(filteredCoffees)
+                break;
+            case "medium":
+                filteredCoffees = userSelection.filter(coffee => coffee.roast === "medium");
+                filteredCoffees = searchByInput(filteredCoffees)
+                break;
+            case "dark":
+                filteredCoffees = userSelection.filter(coffee => coffee.roast === "dark");
+                filteredCoffees = searchByInput(filteredCoffees)
+                break;
         }
-    });
+    } else {
+        coffees.forEach(coffee => {
+            // ADDED ANOTHER CONDITION TO MAKE ALL THE ROAST POPULATE WHEN 'all' IS SELECTED
+            if (coffee.roast === selectedRoast || selectedRoast === "all") {
+                filteredCoffees.push(coffee);
+            }
+        });
+    }
     tbody.innerHTML = renderCoffees(filteredCoffees);
 }
+
+
+
+
+// } else {
+//     switch (selectedRoast) {
+//         case "light":
+//             filteredCoffees = coffees.filter(coffee => coffee.roast === "light");
+//             break;
+//         case "medium":
+//             filteredCoffees = coffees.filter(coffee => coffee.roast === "light");
+//             break;
+//         case "dark":
+//             filteredCoffees = coffees.filter(coffee => coffee.roast === "light");
+//             break;
+//     }
+// }
+
+
+function searchByInput(coffees) {
+    const userInput = document.getElementById("coffee-search").value;
+    if (!userInput) {
+        return coffees;
+    }
+   return coffees.filter(coffee => coffee.name.includes(userInput));
+}
+
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
 const coffees = [
@@ -80,7 +129,7 @@ function addCoffee(event) {
     const roastSelection = document.querySelector('#roast-add-selection').value;
     const roastName = document.querySelector('#add-coffee-name').value;
 
-    const newId =   coffees.length + 1;
+    const newId = coffees.length + 1;
 
     coffees.push({
         id: newId,
