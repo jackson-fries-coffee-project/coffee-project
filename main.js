@@ -1,12 +1,11 @@
 "use strict"
 
+// CHANGED TABLE TO DIV AND ADDED COL-6 TO SHOW COFFEE LIST IN TWO COLUMNS
 function renderCoffee(coffee) {
-    let html = '<tr class="coffee">';
-    html += `<td>${coffee.id}</td>`;
-    html += `<td>${coffee.name}</td>`;
-    html += `<td>${coffee.roast}</td>`;
-    html += '</tr>';
-
+    let html = '<div class="coffee col-6">';
+    html += `<h3>${coffee.name}</h3>`;
+    html += `<p>${coffee.roast}</p>`;
+    html += '</div>';
     return html;
 }
 
@@ -23,7 +22,8 @@ function updateCoffees(e) {
     const selectedRoast = roastSelection.value;
     const filteredCoffees = [];
     coffees.forEach(coffee => {
-        if (coffee.roast === selectedRoast) {
+        // ADDED ANOTHER CONDITION TO MAKE ALL THE ROAST POPULATE WHEN 'all' IS SELECTED
+        if (coffee.roast === selectedRoast || selectedRoast === "all") {
             filteredCoffees.push(coffee);
         }
     });
@@ -72,9 +72,8 @@ function searchCoffee(event) {
 document.querySelector("#search-from").addEventListener("submit", searchCoffee);
 document.querySelector("#coffee-search").addEventListener("keyup", searchCoffee);
 
-function searchTimeout() {
-
-}
+// ADDED AN EVENT LISTENER TO ROAST SELECTION SO WHEN YOU SELECT A ROAST FROM THE DROPDOWN THE COFFEE LIST WILL UPDATE AS WELL
+document.querySelector("#roast-selection").addEventListener('input', updateCoffees);
 
 function addCoffee(event) {
     event.preventDefault();
@@ -93,6 +92,3 @@ function addCoffee(event) {
 }
 
 document.querySelector("#add-form").addEventListener("submit", addCoffee);
-function saveCoffee() {
-
-}
