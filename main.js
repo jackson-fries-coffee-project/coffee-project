@@ -9,6 +9,7 @@ function renderCoffee(coffee) {
     return html;
 }
 
+// creates html to list all coffees
 function renderCoffees(coffees) {
     let coffeeListHtml = '';
     for (let i = coffees.length - 1; i >= 0; i--) {
@@ -17,42 +18,26 @@ function renderCoffees(coffees) {
     return coffeeListHtml;
 }
 
+// used to update coffees based on inputs by user
 function updateCoffees(e) {
-    e.preventDefault(); // don't submit the form, we just want to update the data
+    // on adding a coffee the event will be undefined
+    if (e) {
+        e.preventDefault();
+    }
+    // don't submit the form, we just want to update the data
     const selectedRoast = roastSelection.value;
     let filteredCoffees = [];
-    let userSelection = [];
-    // const userInput = document.getElementById("coffee-search").value;
-// filterAll(filteredCoffees, userInput);
+
     if (selectedRoast !== "all") {
-        userSelection = [...allCoffees];
-        switch (selectedRoast) {
-            case "light":
-                filteredCoffees = userSelection.filter(coffee => coffee.roast === "light");
-                filteredCoffees = searchByInput(filteredCoffees)
-                break;
-            case "medium":
-                filteredCoffees = userSelection.filter(coffee => coffee.roast === "medium");
-                filteredCoffees = searchByInput(filteredCoffees)
-                break;
-            case "dark":
-                filteredCoffees = userSelection.filter(coffee => coffee.roast === "dark");
-                filteredCoffees = searchByInput(filteredCoffees)
-                break;
-        }
+        filteredCoffees = searchByOtherRoastsSelected(selectedRoast);
     } else {
-        allCoffees.forEach(coffee => {
-            // ADDED ANOTHER CONDITION TO MAKE ALL THE ROAST POPULATE WHEN 'all' IS SELECTED
-            if (coffee.roast === selectedRoast || selectedRoast === "all") {
-                filteredCoffees.push(coffee);
-            }
-        });
-        filteredCoffees = searchByInput(filteredCoffees)
+        filteredCoffees = searchByAllSelected(filteredCoffees, selectedRoast);
     }
+    filteredCoffees = searchByInput(filteredCoffees);
     tbody.innerHTML = renderCoffees(filteredCoffees);
 }
 
-
+// This code is used to search for coffees using value from search box
 function searchByInput(coffees) {
     const userInput = document.getElementById("coffee-search").value;
     if (!userInput) {
@@ -61,6 +46,37 @@ function searchByInput(coffees) {
     return coffees.filter(coffee => coffee.name.toLowerCase().includes(userInput));
 }
 
+// used to search by the All roast value
+function searchByAllSelected(filteredCoffees, selectedRoast) {
+    allCoffees.forEach(coffee => {
+        // ADDED ANOTHER CONDITION TO MAKE ALL THE ROAST POPULATE WHEN 'all' IS SELECTED
+        if (coffee.roast === selectedRoast || selectedRoast === "all") {
+            filteredCoffees.push(coffee);
+        }
+    });
+    return filteredCoffees;
+}
+
+// Function to search by roast if its other than All value (Dark, Medium, Light)
+function searchByOtherRoastsSelected(selectedRoast) {
+    // function searchByAllNotSelected(filteredCoffees, selectedRoast) {
+    let userSelection = [...allCoffees];
+    let filteredCoffees = [];
+    switch (selectedRoast) {
+        case "light":
+            filteredCoffees = userSelection.filter(coffee => coffee.roast === "light");
+            break;
+        case "medium":
+            filteredCoffees = userSelection.filter(coffee => coffee.roast === "medium");
+            break;
+        case "dark":
+            filteredCoffees = userSelection.filter(coffee => coffee.roast === "dark");
+            break;
+    }
+    return filteredCoffees;
+}
+
+// variable will contain coffees and saved Coffees
 let allCoffees = [];
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
@@ -81,63 +97,66 @@ const coffees = [
     {id: 14, name: 'French', roast: 'dark'},
 ];
 
+// Global HTML References
 const tbody = document.querySelector('#coffees');
 const submitButton = document.querySelector('#submit');
 const roastSelection = document.querySelector('#roast-selection');
 
 tbody.innerHTML = renderCoffees(getAllCoffees());
 
-submitButton.addEventListener('click', updateCoffees);
+function getAllCoffees() {
+    return allCoffees = [...coffees, ...getSavedCoffees()];
+}
 
-
-document.querySelector("#search-from").addEventListener("submit", updateCoffees);
-document.querySelector("#coffee-search").addEventListener("keyup", updateCoffees);
-
+// All Events
 // ADDED AN EVENT LISTENER TO ROAST SELECTION SO WHEN YOU SELECT A ROAST FROM THE DROPDOWN THE COFFEE LIST WILL UPDATE AS WELL
 document.querySelector("#roast-selection").addEventListener('change', updateCoffees);
+submitButton.addEventListener('click', updateCoffees);
+document.querySelector("#search-from").addEventListener("submit", updateCoffees);
+document.querySelector("#coffee-search").addEventListener("keyup", updateCoffees);
+document.querySelector("#add-form").addEventListener("submit", addCoffee);
 
+// Will Add the coffee and run functions related to persisting the coffee to the browser
 function addCoffee(event) {
     event.preventDefault();
     const roastSelection = document.querySelector('#roast-add-selection').value;
     const roastName = document.querySelector('#add-coffee-name').value;
 
-    const newId = allCoffees.length + 1;
     const coffee = {
-        id: newId,
+        id: allCoffees.length + 1,
         name: roastName,
         roast: roastSelection
     }
-    allCoffees.push(coffee)
-    saveCoffee(coffee)
-    tbody.innerHTML = renderCoffees(allCoffees);
+    allCoffees.push(coffee);
+    saveCoffee(coffee);
+
+    // Reset the search and the dropdown to default values
+    resetValuesAfterAddCoffee();
+
+    updateCoffees();
 }
 
-document.querySelector("#add-form").addEventListener("submit", addCoffee);
+function resetValuesAfterAddCoffee() {
+    document.getElementById("coffee-search").value = "";
+    document.querySelector('#roast-selection').value = "all";
+    document.querySelector('#add-coffee-name').value = "";
+}
 
 // Persistence
 function saveCoffee(coffee) {
 //     Check if coffee exists on local storage
     let preppedCoffees = getSavedCoffees();
     preppedCoffees.push(coffee);
-
-    console.log(preppedCoffees);
     // stringify the coffees to save to local storage
     localStorage.setItem('coffees', JSON.stringify(preppedCoffees));
-    console.log(JSON.stringify(JSON.parse(localStorage.getItem('coffees'))));
-
 }
 
+// gets coffees in local storage
 function getSavedCoffees() {
+    // check if coffees key exists otherwise return empty array
     if (localStorage.getItem('coffees')) {
-        console.log(JSON.stringify(localStorage.getItem('coffees')));
         return JSON.parse(localStorage.getItem('coffees'));
     } else {
         return [];
     }
 }
-
-function getAllCoffees() {
-    return allCoffees = [...coffees, ...getSavedCoffees()];
-}
-
-getAllCoffees();
