@@ -43,7 +43,7 @@ function searchByInput(coffees) {
     if (!userInput) {
         return coffees;
     }
-    return coffees.filter(coffee => coffee.name.toLowerCase().includes(userInput));
+    return coffees.filter(coffee => coffee.name.toLowerCase().includes(userInput.toLowerCase()));
 }
 
 // used to search by the All roast value
@@ -112,9 +112,25 @@ function getAllCoffees() {
 // ADDED AN EVENT LISTENER TO ROAST SELECTION SO WHEN YOU SELECT A ROAST FROM THE DROPDOWN THE COFFEE LIST WILL UPDATE AS WELL
 document.querySelector("#roast-selection").addEventListener('change', updateCoffees);
 submitButton.addEventListener('click', updateCoffees);
-document.querySelector("#search-from").addEventListener("submit", updateCoffees);
-document.querySelector("#coffee-search").addEventListener("keyup", updateCoffees);
 document.querySelector("#add-form").addEventListener("submit", addCoffee);
+document.querySelector("#search-from").addEventListener("submit", updateCoffees);
+// Long Awaited Search Timeout
+// document.querySelector("#coffee-search").addEventListener("keyup", updateCoffees);
+
+let searchTimeout;
+document.querySelector("#coffee-search").addEventListener("keyup", (event) => {
+
+    console.log(event);
+    clearTimeout(searchTimeout);
+
+    // dont start
+    searchTimeout = setTimeout(function () {
+        updateCoffees();
+    }, 550);
+});
+
+
+
 
 // Will Add the coffee and run functions related to persisting the coffee to the browser
 function addCoffee(event) {
@@ -160,3 +176,4 @@ function getSavedCoffees() {
         return [];
     }
 }
+
