@@ -25,8 +25,7 @@ function updateCoffees(e) {
     // const userInput = document.getElementById("coffee-search").value;
 // filterAll(filteredCoffees, userInput);
     if (selectedRoast !== "all") {
-        userSelection = [...coffees];
-        console.log(userSelection)
+        userSelection = [...allCoffees];
         switch (selectedRoast) {
             case "light":
                 filteredCoffees = userSelection.filter(coffee => coffee.roast === "light");
@@ -42,7 +41,7 @@ function updateCoffees(e) {
                 break;
         }
     } else {
-        coffees.forEach(coffee => {
+        allCoffees.forEach(coffee => {
             // ADDED ANOTHER CONDITION TO MAKE ALL THE ROAST POPULATE WHEN 'all' IS SELECTED
             if (coffee.roast === selectedRoast || selectedRoast === "all") {
                 filteredCoffees.push(coffee);
@@ -51,8 +50,6 @@ function updateCoffees(e) {
     }
     tbody.innerHTML = renderCoffees(filteredCoffees);
 }
-
-
 
 
 // } else {
@@ -75,9 +72,10 @@ function searchByInput(coffees) {
     if (!userInput) {
         return coffees;
     }
-   return coffees.filter(coffee => coffee.name.includes(userInput));
+    return coffees.filter(coffee => coffee.name.includes(userInput));
 }
 
+let allCoffees = [];
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
 const coffees = [
@@ -101,7 +99,7 @@ const tbody = document.querySelector('#coffees');
 const submitButton = document.querySelector('#submit');
 const roastSelection = document.querySelector('#roast-selection');
 
-tbody.innerHTML = renderCoffees(coffees);
+tbody.innerHTML = renderCoffees(getAllCoffees());
 
 submitButton.addEventListener('click', updateCoffees);
 
@@ -109,7 +107,7 @@ function searchCoffee(event) {
     event.preventDefault();
     let searchedCoffeeList = [];
     const coffeeSearch = document.getElementById("coffee-search").value.toLowerCase();
-    searchedCoffeeList = coffees.filter((coffee) => {
+    searchedCoffeeList = allCoffees.filter((coffee) => {
         if (coffee.name.toLowerCase().includes(coffeeSearch) || coffee.roast.toLowerCase().includes(coffeeSearch)) {
             return coffee;
         }
@@ -129,15 +127,43 @@ function addCoffee(event) {
     const roastSelection = document.querySelector('#roast-add-selection').value;
     const roastName = document.querySelector('#add-coffee-name').value;
 
-    const newId = coffees.length + 1;
-
-    coffees.push({
+    const newId = allCoffees.length + 1;
+    const coffee = {
         id: newId,
         name: roastName,
         roast: roastSelection
-    })
-
-    tbody.innerHTML = renderCoffees(coffees);
+    }
+    allCoffees.push(coffee)
+    saveCoffee(coffee)
+    tbody.innerHTML = renderCoffees(allCoffees);
 }
 
 document.querySelector("#add-form").addEventListener("submit", addCoffee);
+
+// Persistence
+function saveCoffee(coffee) {
+//     Check if coffee exists on local storage
+    let preppedCoffees = getSavedCoffees();
+    preppedCoffees.push(coffee);
+
+    console.log(preppedCoffees);
+    // stringify the coffees to save to local storage
+    localStorage.setItem('coffees', JSON.stringify(preppedCoffees));
+    console.log(JSON.stringify(JSON.parse(localStorage.getItem('coffees'))));
+
+}
+
+function getSavedCoffees() {
+    if (localStorage.getItem('coffees')) {
+        console.log(JSON.stringify(localStorage.getItem('coffees')));
+        return JSON.parse(localStorage.getItem('coffees'));
+    } else {
+        return [];
+    }
+}
+
+function getAllCoffees(){
+    return allCoffees = [...coffees,  ...getSavedCoffees()];
+}
+
+getAllCoffees();
