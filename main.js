@@ -122,7 +122,7 @@ document.querySelector("#search-from").addEventListener("submit", searchCoffee);
 document.querySelector("#coffee-search").addEventListener("keyup", searchCoffee);
 
 // ADDED AN EVENT LISTENER TO ROAST SELECTION SO WHEN YOU SELECT A ROAST FROM THE DROPDOWN THE COFFEE LIST WILL UPDATE AS WELL
-document.querySelector("#roast-selection").addEventListener('input', updateCoffees);
+document.querySelector("#roast-selection").addEventListener('change', updateCoffees);
 
 function addCoffee(event) {
     event.preventDefault();
