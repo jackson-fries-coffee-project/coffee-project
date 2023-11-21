@@ -24,6 +24,12 @@ function updateCoffees(e) {
     if (e) {
         e.preventDefault();
     }
+
+removeFadeInClass();
+
+// bottom of update function
+
+
     // don't submit the form, we just want to update the data
     const selectedRoast = roastSelection.value;
     let filteredCoffees = [];
@@ -34,7 +40,10 @@ function updateCoffees(e) {
         filteredCoffees = searchByAllSelected(filteredCoffees, selectedRoast);
     }
     filteredCoffees = searchByInput(filteredCoffees);
-    tbody.innerHTML = renderCoffees(filteredCoffees);
+    setTimeout(() => {
+        tbody.innerHTML = renderCoffees(filteredCoffees);
+        toggleFadeInClass();
+    }, 25);
 }
 
 // This code is used to search for coffees using value from search box
@@ -169,4 +178,14 @@ function getSavedCoffees() {
         return [];
     }
 }
+
+function toggleFadeInClass() {
+    tbody.classList.add('fade-in-coffees');
+}
+
+function removeFadeInClass() {
+    tbody.classList.remove('fade-in-coffees');
+}
+
+toggleFadeInClass();
 
