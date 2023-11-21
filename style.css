@@ -39,7 +39,7 @@ label {
 
 /* BACKGROUND IMAGE */
 body {
-    background-image: url("sunset.jpeg");
+    background-image: url("dreams.jpeg");
     /*background-repeat: no-repeat;*/
     max-width: 100%;
     height: auto;
@@ -53,7 +53,8 @@ body {
 
 /* NAVBAR */
 .navbar {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white;
 }
 
 .navbar-brand:hover {
@@ -67,7 +68,7 @@ body {
 /* CARDS */
 .card {
     background-color: rgba(255, 255, 255, 0) !important;
-    color: black;
+    color: white;
 }
 
 
@@ -75,3 +76,14 @@ body {
     font-family: 'Shadows Into Light', cursive;
 }
 
+.navbar-brand {
+    color: white;
+}
+
+h1 {
+    color: white;
+}
+
+hr {
+    color: white;
+}
