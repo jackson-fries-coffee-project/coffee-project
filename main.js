@@ -25,7 +25,7 @@ function updateCoffees(e) {
         e.preventDefault();
     }
 
-removeFadeInClass();
+    removeFadeInClass();
 
 // bottom of update function
 
@@ -40,6 +40,7 @@ removeFadeInClass();
         filteredCoffees = searchByAllSelected(filteredCoffees, selectedRoast);
     }
     filteredCoffees = searchByInput(filteredCoffees);
+    filteredCoffees = sortById(filteredCoffees);
     setTimeout(() => {
         tbody.innerHTML = renderCoffees(filteredCoffees);
         toggleFadeInClass();
@@ -188,4 +189,13 @@ function removeFadeInClass() {
 }
 
 toggleFadeInClass();
+
+function sortById(coffees) {
+    return coffees.sort((a, b) => {
+        if (a.id < b.id) {
+            return -1;
+        }
+    });
+}
+
 
